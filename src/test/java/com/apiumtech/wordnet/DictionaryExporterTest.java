@@ -13,8 +13,9 @@ public class DictionaryExporterTest {
 
     @Test
     public void test_Name() throws Exception {
-        DictionaryExporter dictionaryExporter = new DictionaryExporter();
-        String path = DictionaryExporterTest.class.getResource("/WordIndex.csv").getPath();
+        String destPath = "/media/halfer/sources_apocrifos_dix/apocryphs";
+        DictionaryExporter dictionaryExporter = new DictionaryExporter(destPath);
+        String path = DictionaryExporterTest.class.getResource("/wordIndex.txt").getPath();
         dictionaryExporter.createTxtDictionaryMode1(path);
 
 

@@ -1,5 +1,6 @@
 package com.apiumtech.wordnet;
 
+import com.androidxtrem.commonsHelpers.FileHelper;
 import com.google.gson.JsonObject;
 import net.didion.jwnl.JWNLException;
 
@@ -15,10 +16,15 @@ import java.util.List;
  */
 public class DictionaryExporter {
 
+    private String destPath;
+
+    public DictionaryExporter(String destPath) {
+        this.destPath = destPath;
+    }
+
     public void createTxtDictionaryMode1(String fileWithIndexPath) throws IOException, JWNLException {
 
         String readline;
-        String[] line;
         String key;
         String value;
         List hyponyms;
@@ -28,7 +34,9 @@ public class DictionaryExporter {
 
         JWNLWrapper wordnetWrapper = new JWNLWrapper();
 
-        InputStreamReader is = new InputStreamReader(new FileInputStream(new File(fileWithIndexPath)));
+        final File file = new File(fileWithIndexPath);
+        final File fileDest = new File(destPath+"/"+file.getName());
+        InputStreamReader is = new InputStreamReader(new FileInputStream(file));
         BufferedReader br = new BufferedReader(is);
         while ((readline = br.readLine()) != null) {
 
@@ -36,9 +44,10 @@ public class DictionaryExporter {
             hyponyms = wordnetWrapper.getHyponymList(key);
             hypernyms = wordnetWrapper.getHypernymList(key);
             value = getJsonSerializedValue(hyponyms, hypernyms);
-            System.out.println(cont++ + "\t [" + key + "*" + value + "]");
-
-
+            StringBuilder builder = new StringBuilder();
+            builder.append(key).append("*").append(value).append("\n");
+            System.out.println(cont++ + builder.toString());
+            FileHelper.stringToFile(builder.toString(),fileDest,true,"UTF-8");
         }
     }
 
